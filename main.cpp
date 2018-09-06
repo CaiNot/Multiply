@@ -5,36 +5,48 @@
 using namespace std;
 
 string multiply(string num1, string num2) {
-    vector<string> ans;
-    string tempAnsLast, tempAnsNow, tempAnsSum = "";
-    int c = 0, value_1 = 0;//进位
-    int lengthNum2 = num2.size(), lengthNum1 = num1.size();
-    for (int i = 0; i < lengthNum2; i++) {
-        tempAnsLast = to_string((num2[i] - '0') * (num1[0] - '0'));
-        tempAnsSum = tempAnsLast;
-        for (int j = 1; j < lengthNum1; j++) {
-            int lengTempLast = tempAnsLast.size(),
-                    lengthTempNow = tempAnsNow.size(), lengthTempSum = tempAnsSum.size();
-            tempAnsNow = to_string((num2[i] - '0') * (num1[j] - '0'));
-            if (lengthTempSum >= j)
-                tempAnsSum = tempAnsSum.substr(lengthTempSum - j, lengthTempSum);
+    int length1 = num1.size(), length2 = num2.size(), value = length1 + length2;
+    if (num1 == "0" || num2 == "0")
+        return "0";
 
-            for (int k = lengTempLast - j - 1; k >= 0; k--) {
-                value_1 = (tempAnsSum[j] - '0') + tempAnsNow[lengthTempNow - j] - '0' + c;
-                c = 0;
-                tempAnsSum = tempAnsSum +
-                             to_string(value_1 % 10);
-                c += value_1 / 10;
-            }
-            tempAnsSum = tempAnsNow[0] + tempAnsSum;
-
-
-        }
+    int num1_int[length1], num2_int[length2], num3_int[value];
+    for (int i = 0; i < value; i++) {
+        num3_int[i] = 0;
+    }
+    for (int i = 0; i < length1; i++) {
+        num1_int[i] = num1[i] - '0';
+    }
+    for (int i = 0; i < length2; i++) {
+        num2_int[i] = num2[i] - '0';
     }
 
+    for (int i = 0; i < length1; i++) {
+        for (int j = 0; j < length2; j++) {
+            num3_int[i + j + 1] += num1_int[i] * num2_int[j];
+        }
+    }
+    for (int i = value - 1; i > 0; i--) {
+        if (num3_int[i] >= 10) {
+            num3_int[i - 1] += num3_int[i] / 10;
+            num3_int[i] %= 10;
+        }
+    }
+    string ans = "";
+    int i = 0;
+    if (num3_int[0] == 0)
+        i = 1;
+    for (; i < value; i++) {
+        ans += to_string(num3_int[i]);
+    }
+    return ans;
 }
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
+    cout << multiply("5", "12") << endl;
+    cout << multiply("0", "6") << endl;
+    cout << multiply("9999999999999", "9") << endl;
+
+
     return 0;
 }
